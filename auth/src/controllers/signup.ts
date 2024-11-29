@@ -1,7 +1,7 @@
 import { body, validationResults } from "koa-req-validation"
-import { RequestError, SignupInfo } from "."
 import { Context, Next } from "koa"
 import { RouterContext } from "@koa/router"
+import { AuthValidationError, DatabaseConnectionError } from "../middlewares"
 
 // export const validationErrorHandler = async (ctx: Context, next: Next) => {
 // 	try {
@@ -26,15 +26,14 @@ const userRegistrationValidation = [
 
 export const signupController = [
 	...userRegistrationValidation,
-	async (ctx: RouterContext<SignupInfo>) => {
+	async (ctx: RouterContext) => {
 		const results = validationResults(ctx)
 
 		if (results.hasErrors()) {
-			throw new Error("Invalid email or password")
+			throw new AuthValidationError(results.array())
 		}
 
 		const { email, password } = ctx.request.body
-		// Process the user registration here
 
 		ctx.body = { message: "User registered successfully" }
 	},
