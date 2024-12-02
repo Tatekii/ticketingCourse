@@ -3,7 +3,7 @@ import { bodyParser } from "@koa/bodyparser"
 import Router from "@koa/router"
 import api from "./apis"
 import * as middlewares from "./middlewares"
-import { DB } from "./utils/config"
+import { DB } from "./services"
 
 const app = new Koa()
 

@@ -25,11 +25,10 @@ export const signupController = [
 		if (existingUser !== null) {
 			// ctx.body = "email already in use"
 			throw new BadRequestError("email already in use")
-			// return
 		}
 
 		const newUser = User.build({ email, password })
 		await newUser.save()
-		ctx.body = "register success!"
+		ctx.body = newUser
 	},
 ]
