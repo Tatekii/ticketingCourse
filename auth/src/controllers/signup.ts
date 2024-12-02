@@ -2,6 +2,7 @@ import { body, validationResults } from "koa-req-validation"
 import { RouterContext } from "@koa/router"
 import { AuthValidationError, BadRequestError, DatabaseConnectionError } from "../middlewares"
 import { User } from "../models/user"
+import jwt from "jsonwebtoken"
 
 // Validation rules for user registration
 const userRegistrationValidation = [
@@ -29,6 +30,18 @@ export const signupController = [
 
 		const newUser = User.build({ email, password })
 		await newUser.save()
+
+		// jwt generate
+		const userJwt = jwt.sign(
+			{
+				id: newUser.id,
+				email: newUser.email,
+			},
+			"TODO"
+		)
+
+		ctx.cookies.set("JWT", userJwt)
+
 		ctx.body = newUser
 	},
 ]
