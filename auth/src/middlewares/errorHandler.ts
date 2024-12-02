@@ -1,16 +1,24 @@
 import { Context, Next } from "koa"
 import { IValidationError } from "koa-req-validation"
 
+abstract class CustomError extends Error {
+	abstract statusCode: number
+	abstract serialize(): { message: string; field?: string }[]
+
+	constructor(message: string) {
+		super(message)
+	}
+}
+
 /** auth info 正则错误 */
-export class AuthValidationError extends Error {
-	statusCode = 400
+export class AuthValidationError extends CustomError {
+	readonly statusCode = 400
 
 	constructor(public errors: IValidationError[]) {
-		super()
-		Reflect.setPrototypeOf(this, AuthValidationError.prototype)
+		super("Error in auth info")
 	}
 
-	serialized() {
+	serialize() {
 		return this.errors.map((e) => ({
 			message: e.msg,
 			field: e.param,
@@ -19,17 +27,28 @@ export class AuthValidationError extends Error {
 }
 
 /** 连接数据库出错 */
-export class DatabaseConnectionError extends Error {
-	statusCode = 500
-	reason = "连接数据库出错"
+export class DatabaseConnectionError extends CustomError {
+	readonly statusCode = 500
+	readonly reason = "连接数据库出错"
 
 	constructor() {
-		super()
-		Reflect.setPrototypeOf(this, DatabaseConnectionError.prototype)
+		super("Error connecting to DB")
 	}
 
-	serialized() {
+	serialize() {
 		return [{ message: this.reason }]
+	}
+}
+
+export class NotFoundError extends CustomError {
+	readonly statusCode = 404
+
+	constructor() {
+		super("Resource not found")
+	}
+
+	serialize() {
+		return [{ message: this.message }]
 	}
 }
 
@@ -40,12 +59,9 @@ export const errorHandler = async (ctx: Context, next: Next) => {
 	try {
 		await next()
 	} catch (err) {
-		if (err instanceof AuthValidationError) {
+		if (err instanceof CustomError) {
 			ctx.status = err.statusCode
-			ctx.body = { errors: err.serialized() }
-		} else if (err instanceof DatabaseConnectionError) {
-			ctx.status = err.statusCode
-			ctx.body = { errors: err.serialized() }
+			ctx.body = { errors: err.serialize() }
 		} else {
 			ctx.status = 400
 			ctx.body = [{ message: "Ops, Something went wrong" }]
