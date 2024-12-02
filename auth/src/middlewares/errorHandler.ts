@@ -52,6 +52,18 @@ export class NotFoundError extends CustomError {
 	}
 }
 
+export class BadRequestError extends CustomError {
+	readonly statusCode = 400
+
+	constructor(public message: string) {
+		super(message)
+	}
+
+	serialize() {
+		return [{ message: this.message }]
+	}
+}
+
 /**
  * 错误捕获
  */

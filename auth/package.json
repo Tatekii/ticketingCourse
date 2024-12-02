@@ -17,9 +17,11 @@
     "@types/koa-json": "^2.0.23",
     "@types/koa-logger": "^3.1.5",
     "@types/lodash": "^4.17.13",
+    "@types/mongoose": "^5.11.97",
     "koa": "^2.15.3",
     "koa-req-validation": "^0.17.0",
     "lodash": "^4.17.21",
+    "mongoose": "^8.8.3",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.7.2",
     "validator": "^13.12.0"

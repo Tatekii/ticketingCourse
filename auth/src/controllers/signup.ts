@@ -1,22 +1,7 @@
 import { body, validationResults } from "koa-req-validation"
-import { Context, Next } from "koa"
 import { RouterContext } from "@koa/router"
-import { AuthValidationError, DatabaseConnectionError } from "../middlewares"
-
-// export const validationErrorHandler = async (ctx: Context, next: Next) => {
-// 	try {
-// 		await next()
-// 	} catch (err: any) {
-// 		console.log("CATCH ERR", err)
-
-// 		if (err.isBoom) {
-// 			ctx.status = err.output.statusCode
-// 			ctx.body = err.output.payload
-// 		} else {
-// 			throw err
-// 		}
-// 	}
-// }
+import { AuthValidationError, BadRequestError, DatabaseConnectionError } from "../middlewares"
+import { User } from "../models/user"
 
 // Validation rules for user registration
 const userRegistrationValidation = [
@@ -35,6 +20,16 @@ export const signupController = [
 
 		const { email, password } = ctx.request.body
 
-		ctx.body = { message: "User registered successfully" }
+		const existingUser = await User.findOne({ email })
+
+		if (existingUser !== null) {
+			// ctx.body = "email already in use"
+			throw new BadRequestError("email already in use")
+			// return
+		}
+
+		const newUser = User.build({ email, password })
+		await newUser.save()
+		ctx.body = "register success!"
 	},
 ]

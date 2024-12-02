@@ -14,7 +14,6 @@ const api = new Router({
 
 api.get("/users/4041", async (ctx, next) => {
 	throw new NotFoundError()
-	// await next()
 })
 
 api.get("/users/currentUser", controllers.currentUserController)
