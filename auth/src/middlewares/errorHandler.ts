@@ -1,7 +1,7 @@
 import { Context, Next } from "koa"
 import { IValidationError } from "koa-req-validation"
 
-abstract class CustomError extends Error {
+export abstract class CustomError extends Error {
 	abstract statusCode: number
 	abstract serialize(): { message: string; field?: string }[]
 
@@ -71,6 +71,8 @@ export const errorHandler = async (ctx: Context, next: Next) => {
 	try {
 		await next()
 	} catch (err) {
+		console.log(err);
+		
 		if (err instanceof CustomError) {
 			ctx.status = err.statusCode
 			ctx.body = { errors: err.serialize() }

@@ -15,6 +15,12 @@ spec:
       containers:
         - name: auth
           image: localhost:5050/auth
+          env:
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: backend-user
+                  key: jwt-string
 ---
 apiVersion: v1
 kind: Service

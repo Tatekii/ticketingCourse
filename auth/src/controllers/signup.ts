@@ -3,6 +3,8 @@ import { RouterContext } from "@koa/router"
 import { AuthValidationError, BadRequestError, DatabaseConnectionError } from "../middlewares"
 import { User } from "../models/user"
 import jwt from "jsonwebtoken"
+import { validateAuthHandler } from "../middlewares/validateAuthHandler"
+import { Next } from "koa"
 
 // Validation rules for user registration
 const userRegistrationValidation = [
@@ -12,39 +14,22 @@ const userRegistrationValidation = [
 
 export const signupController = [
 	...userRegistrationValidation,
-	async (ctx: RouterContext) => {
-		const results = validationResults(ctx)
-
-		if (results.hasErrors()) {
-			throw new AuthValidationError(results.array())
-		}
-
+	validateAuthHandler,
+	async (ctx: RouterContext, next: Next) => {
 		const { email, password } = ctx.request.body
 
 		const existingUser = await User.findOne({ email })
 
 		if (existingUser !== null) {
-			// ctx.body = "email already in use"
 			throw new BadRequestError("email already in use")
 		}
 
 		const newUser = User.build({ email, password })
 		await newUser.save()
 
-		if(!process.env.JWT_KEY){
-			throw new Error('Can not find JWT_KEY in auth container!')
-		}
-		// jwt generate
-		const userJwt = jwt.sign(
-			{
-				id: newUser.id,
-				email: newUser.email,
-			},
-			process.env.JWT_KEY
-		)
+		ctx.status = 200
+		ctx.body = { message: "Successful registration!" }
 
-		ctx.cookies.set("JWT", userJwt)
-
-		ctx.body = newUser
+		await next()
 	},
 ]
