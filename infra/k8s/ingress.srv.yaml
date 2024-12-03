@@ -3,15 +3,15 @@ kind: Ingress
 metadata:
   name: ingress-srv
   annotations:
-    spec.ingressClassName: nginx
     nginx.ingress.kubernetes.io/use-regex: 'true'
 spec:
+  ingressClassName: nginx
   rules: 
     - host: posts.com
       http:
         paths:
           - path: /api/users/(.+)
-            pathType: Prefix
+            pathType: ImplementationSpecific
             backend: 
               service:
                 name: auth-srv

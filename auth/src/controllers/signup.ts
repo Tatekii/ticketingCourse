@@ -31,13 +31,16 @@ export const signupController = [
 		const newUser = User.build({ email, password })
 		await newUser.save()
 
+		if(!process.env.JWT_KEY){
+			throw new Error('Can not find JWT_KEY in auth container!')
+		}
 		// jwt generate
 		const userJwt = jwt.sign(
 			{
 				id: newUser.id,
 				email: newUser.email,
 			},
-			"TODO"
+			process.env.JWT_KEY
 		)
 
 		ctx.cookies.set("JWT", userJwt)

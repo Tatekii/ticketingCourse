@@ -1,19 +1,45 @@
 apiVersion: skaffold/v1
 kind: Config
-deploy:
-  kubectl:
-    manifests:
-      - './infra/k8s/*'
+metadata:
+    name: ticketing-app
+
 build:
-  local:
-    push: false
-  artifacts:
-    - image: localhost:5050/auth
-      context: auth
-      docker:
-        dockerfile: Dockerfile
-      sync:
-        manual:
-          - src: 'src/**/**/*.ts'
-            dest: .
-      
+    local:
+        push: false
+    artifacts:
+        - image: localhost:5050/auth
+          context: auth
+          docker:
+              dockerfile: Dockerfile
+          sync:
+              manual:
+                  - src: src/**/**/*.ts
+                    dest: .
+
+deploy:
+    kubectl:
+        manifests:
+            - ./infra/k8s/*.yaml
+
+# profiles:
+#     - name: dev
+#       activation:
+#           - kubeContext: minikube
+#       deploy:
+#           kubectl:
+#               manifests:
+#                   - ./infra/k8s/dev/*.yaml
+#     - name: staging
+#       activation:
+#           - kubeContext: staging-cluster
+#       deploy:
+#           kubectl:
+#               manifests:
+#                   - ./infra/k8s/staging/*.yaml
+#     - name: prod
+#       activation:
+#           - kubeContext: prod-cluster
+#       deploy:
+#           kubectl:
+#               manifests:
+#                   - ./infra/k8s/prod/*.yaml
