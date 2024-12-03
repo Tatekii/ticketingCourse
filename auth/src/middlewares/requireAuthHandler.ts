@@ -15,7 +15,7 @@ class NotAuthorizedError extends CustomError {
 }
 
 export const requireAuthHandler = async (ctx: RouterContext, next: Next) => {
-	if (!ctx.currentUser) {
+	if (!ctx.state.currentUser) {
 		throw new NotAuthorizedError()
 	}
 	await next()

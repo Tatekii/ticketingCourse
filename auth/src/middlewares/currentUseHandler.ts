@@ -13,17 +13,18 @@ import { User } from "../models/user"
 // 	}
 // }
 
-export const currentUserHandler = async (ctx: Context, next: Next) => {
+export const currentUserHandler = async (ctx: RouterContext, next: Next) => {
 	const token = ctx.cookies?.get("JWT")
 
 	if (!token) {
+		ctx.state.user = null
 		await next()
 		return
 	}
 
 	try {
 		const payload = jwt.verify(token, process.env.JWT_KEY!) as User
-		ctx.currentUser = payload
+		ctx.state.user = payload
 	} catch (err) {}
 
 	await next()

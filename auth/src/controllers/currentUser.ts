@@ -1,14 +1,14 @@
 import { RouterContext } from "@koa/router"
-import { Next } from "koa"
+import { Context, Next } from "koa"
 import { currentUserHandler } from "../middlewares/currentUseHandler"
 import { requireAuthHandler } from "../middlewares/requireAuthHandler"
 
 export const currentUserController = [
 	currentUserHandler,
 	// requireAuthHandler,
-	async (ctx: RouterContext, next: Next) => {
+	async (ctx: Context, next: Next) => {
 
-		ctx.body = { currentUser: ctx.currentUser }
+		ctx.body = { currentUser: ctx.state.user }
 
 		await next()
 	},
