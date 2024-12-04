@@ -15,7 +15,7 @@ api.get("/users/404", async (ctx, next) => {
 	throw new NotFoundError()
 })
 
-api.get("/users/currentUser", ...controllers.currentUserController)
+api.get("/users/currentuser", ...controllers.currentUserController)
 
 api.post("/users/signin", ...controllers.signinController)
 

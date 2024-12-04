@@ -71,8 +71,6 @@ export const errorHandler = async (ctx: Context, next: Next) => {
 	try {
 		await next()
 	} catch (err) {
-		console.log(err);
-		
 		if (err instanceof CustomError) {
 			ctx.status = err.statusCode
 			ctx.body = { errors: err.serialize() }

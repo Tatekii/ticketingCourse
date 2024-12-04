@@ -1,8 +1,7 @@
-import { body, validationResults } from "koa-req-validation"
+import { body } from "koa-req-validation"
 import { RouterContext } from "@koa/router"
-import { AuthValidationError, BadRequestError, DatabaseConnectionError } from "../middlewares"
+import { BadRequestError } from "../middlewares"
 import { User } from "../models/user"
-import jwt from "jsonwebtoken"
 import { validateAuthHandler } from "../middlewares/validateAuthHandler"
 import { Next } from "koa"
 
@@ -27,7 +26,7 @@ export const signupController = [
 		const newUser = User.build({ email, password })
 		await newUser.save()
 
-		ctx.status = 200
+		ctx.status = 201
 		ctx.body = { message: "Successful registration!" }
 
 		await next()
