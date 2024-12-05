@@ -2,7 +2,7 @@ import { bodyParser } from "@koa/bodyparser"
 import Router from "@koa/router"
 import api from "./apis"
 import * as middlewares from "./middlewares"
-import Koa from "koa"
+import Koa, { Context, Next } from "koa"
 import session from "koa-session"
 import { User } from "./models/user"
 
@@ -39,6 +39,16 @@ const router = new Router()
 
 app.use(bodyParser()).use(session(CONFIG, app)).use(router.routes()).use(router.allowedMethods())
 
+const test = new Router()
+
+
+console.log(123);
+
+test.get('/hello',async (ctx:Context,next:Next)=>{
+	await next()
+	ctx.body = 'HELLO WORD'
+})
+app.use(test.routes()).use(test.allowedMethods())
 //
 app.use(middlewares.errorHandler)
 

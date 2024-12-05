@@ -8,3 +8,6 @@ nodejs microservice project
 ```bash
 kubectl create secret generic backend-user --from-literal=ticketing-jwt={CODE HERE}
 ```
+
+### ingress-nginx
+### skafflod
