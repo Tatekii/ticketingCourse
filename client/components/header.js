@@ -1,7 +1,10 @@
+"use client"
 import Link from "next/link"
+import { useCurUser } from "../context/user"
 
-export default function Header({ currentUser }) {
-	
+export default function Header() {
+	const currentUser = useCurUser()
+
 	return (
 		<header>
 			<nav className="navbar navbar-light bg-light">

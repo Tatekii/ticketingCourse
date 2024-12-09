@@ -4,7 +4,7 @@ import Form from "react-bootstrap/Form"
 import Button from "react-bootstrap/Button"
 
 import useRequest from "../../../hooks/use-request"
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation"
 
 export default function Signin() {
 	const router = useRouter()
@@ -15,7 +15,10 @@ export default function Signin() {
 		url: "/api/users/signin",
 		method: "post",
 		body: { email, password },
-		onSuccess: () => router.push("/"),
+		onSuccess: () => {
+			router.replace("/")
+			router.refresh()
+		},
 	})
 
 	const onSubmit = async (event) => {
